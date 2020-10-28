@@ -35,17 +35,17 @@ for explosion in explosions:
                 data = tr.data
             stations[tr.stats.station][tr.stats.channel] = data
 
-data_exp = np.empty((0, 3, 2500), float)
+data_exp = np.empty((0, 3, 5000), float)
 bar = ProgressBar(max_value=len(ex))
 for name, stations in bar(ex.items()):
     for key in stations.keys():
         sign = list(stations[key].values())
         for i in range(0, len(sign), 3):
             # data_exp.append(np.array([sign[i], sign[i + 1], sign[i + 2]]))
-            new = np.zeros((1, 3, 2500))
-            new[0, 0, :min(sign[i].shape[0], 2500)] = sign[i][:min(sign[i].shape[0], 2500)]
-            new[0, 1, :min(sign[i + 1].shape[0], 2500)] = sign[i + 1][:min(sign[i + 1].shape[0], 2500)]
-            new[0, 2, :min(sign[i + 2].shape[0], 2500)] = sign[i + 2][:min(sign[i + 2].shape[0], 2500)]
+            new = np.zeros((1, 3, 5000))
+            new[0, 0, :min(sign[i].shape[0], 5000)] = sign[i][:min(sign[i].shape[0], 5000)]
+            new[0, 1, :min(sign[i + 1].shape[0], 5000)] = sign[i + 1][:min(sign[i + 1].shape[0], 5000)]
+            new[0, 2, :min(sign[i + 2].shape[0], 5000)] = sign[i + 2][:min(sign[i + 2].shape[0], 5000)]
             # new = np.array([np.array([sign[i][:2500], sign[i + 1][:2500], sign[i + 2][:2500]])])
             data_exp = np.append(data_exp, new, axis=0)
 
@@ -85,16 +85,16 @@ for earthquake in earthquakes:
                 data = tr.data
             stations[tr.stats.station][tr.stats.channel] = data
 
-data_eq = np.empty((0, 3, 2500), float)
+data_eq = np.empty((0, 3, 5000), float)
 bar = ProgressBar(max_value=len(eq))
 for name, stations in bar(eq.items()):
     for key in stations.keys():
         sign = list(stations[key].values())
         for i in range(0, len(sign), 3):
-            new = np.zeros((1, 3, 2500))
-            new[0, 0, :min(sign[i].shape[0], 2500)] = sign[i][:min(sign[i].shape[0], 2500)]
-            new[0, 1, :min(sign[i + 1].shape[0], 2500)] = sign[i + 1][:min(sign[i + 1].shape[0], 2500)]
-            new[0, 2, :min(sign[i + 2].shape[0], 2500)] = sign[i + 2][:min(sign[i + 2].shape[0], 2500)]
+            new = np.zeros((1, 3, 5000))
+            new[0, 0, :min(sign[i].shape[0], 5000)] = sign[i][:min(sign[i].shape[0], 5000)]
+            new[0, 1, :min(sign[i + 1].shape[0], 5000)] = sign[i + 1][:min(sign[i + 1].shape[0], 5000)]
+            new[0, 2, :min(sign[i + 2].shape[0], 5000)] = sign[i + 2][:min(sign[i + 2].shape[0], 5000)]
             # data_eq = np.append(data_eq, np.array([sign[i], sign[i + 1], sign[i + 2]]), axis=0)
             data_eq = np.append(data_eq, new, axis=0)
 
