@@ -10,6 +10,7 @@ import matplotlib.pyplot as plt
 from progressbar import ProgressBar
 from scipy import signal
 import numpy as np
+import random
 
 DIR = "/mnt/big-data/earthquake/EQ_Exp/"
 explosions = ['Explosions_Final']  # ,'Explosion_Early_Final'] , 'Explosions']
@@ -20,11 +21,19 @@ for explosion in explosions:
     for event in bar(exp_events):
         st = read(event, format='MSEED')
         st.filter('bandpass', freqmin=1, freqmax=20)
-        st.resample(25.0)
+        st.resample(50.0)
         stations = defaultdict(lambda: dict())
         ex[event] = stations
         for tr in st:
-            stations[tr.stats.station][tr.stats.channel] = tr.data
+            # Add zeros to beginning and ending of the signal with random length
+            if tr.stats.npts * tr.stats.delta < 99:
+                t_dif = 100 - tr.stats.npts * tr.stats.delta
+                s = round(random.uniform(0, t_dif),2)
+                e = round(t_dif - s,2)
+                data = np.concatenate([np.zeros(int(s*tr.stats.sampling_rate)), tr.data, np.zeros(int(e*tr.stats.sampling_rate))], axis=0)
+            else:
+                data = tr.data
+            stations[tr.stats.station][tr.stats.channel] = data
 
 data_exp = np.empty((0, 3, 2500), float)
 bar = ProgressBar(max_value=len(ex))
@@ -50,7 +59,7 @@ for earthquake in earthquakes:
         df = pd.read_csv(event_ss)
         st = read(event, format='MSEED')
         st.filter('bandpass', freqmin=1, freqmax=20)
-        # st.resample(25.0)
+        st.resample(50.0)
         stations = defaultdict(lambda: dict())
         eq[event] = stations
         for tr in st:
@@ -66,7 +75,15 @@ for earthquake in earthquakes:
                             second=int(str(df_sta['Sec'].values[0]).split('.')[0]),
                             microsecond=int(str(df_sta['Sec'].values[0]).split('.')[1]))
             tr.trim(p, p + 40, pad=True, fill_value=0)
-            stations[tr.stats.station][tr.stats.channel] = tr.data
+            # Add zeros to beginning and ending of the signal with random length
+            if tr.stats.npts * tr.stats.delta < 99:
+                t_dif = 100 - tr.stats.npts * tr.stats.delta
+                s = round(random.uniform(0, t_dif),2)
+                e = round(t_dif - s,2)
+                data = np.concatenate([np.zeros(int(s*tr.stats.sampling_rate)), tr.data, np.zeros(int(e*tr.stats.sampling_rate))], axis=0)
+            else:
+                data = tr.data
+            stations[tr.stats.station][tr.stats.channel] = data
 
 data_eq = np.empty((0, 3, 2500), float)
 bar = ProgressBar(max_value=len(eq))
