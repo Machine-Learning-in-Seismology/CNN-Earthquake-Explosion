@@ -58,6 +58,9 @@ for earthquake in earthquakes:
         event_ss = event.replace(earthquake, 'Earthquake_Start_Stop').replace('mseed', 'csv')
         df = pd.read_csv(event_ss)
         st = read(event, format='MSEED')
+        for tr in st:
+            if tr.stats.npts == 1:
+                st.remove(tr)
         st.filter('bandpass', freqmin=1, freqmax=20)
         st.resample(50.0)
         stations = defaultdict(lambda: dict())
