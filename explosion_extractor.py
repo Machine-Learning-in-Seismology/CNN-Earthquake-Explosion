@@ -53,10 +53,10 @@ for exp in bar(exps):
 
         output = []
         # Divide multi instrument stations into single instrument
-		for chan in unique_chans:
-			sta_chan = sta.select(channel = chan + '*')
+        for chan in unique_chans:
+            sta_chan = sta.select(channel = chan + '*')
             if len(sta_chan) == 3:
-                for tr in sta:
+                for tr in sta_chan:
                     output.append(tr.data)
                 output = np.array(output)
                 explosions.append(output)
