@@ -27,6 +27,7 @@ for exp in bar(exps):
         for tr in sta:
             tmp_chan.append(tr.stats.channel)
         multi_chan = []
+        unique_chans = []
         for chan in tmp_chan:
             if tmp_chan.count(chan) > 1:
                 multi_chan.append(chan)
@@ -51,15 +52,18 @@ for exp in bar(exps):
         sta.trim(start, end, pad=True, fill_value=0)
 
         output = []
-        if len(sta) == 3:
-            for tr in sta:
-                output.append(tr.data)
-            output = np.array(output)
-            explosions.append(output)
-        else:
-            for tr in sta:
-                print(tr.id)
-            print(f"Something went wrong: not 3 channels... {len(sta):d}")
+        # Divide multi instrument stations into single instrument
+		for chan in unique_chans:
+			sta_chan = sta.select(channel = chan + '*')
+            if len(sta_chan) == 3:
+                for tr in sta:
+                    output.append(tr.data)
+                output = np.array(output)
+                explosions.append(output)
+            else:
+                for tr in sta:
+                    print(tr.id)
+                print(f"Something went wrong: not 3 channels... {len(sta):d}")
 
 with open(os.path.join(DIR, 'explosions.pkl'), 'wb') as f:
     pickle.dump(explosions, f, pickle.HIGHEST_PROTOCOL)
