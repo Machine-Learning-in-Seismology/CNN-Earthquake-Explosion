@@ -47,35 +47,39 @@ def make_stream(dataset):
 
 
 DIR = "/mnt/big-data/earthquake/EQ_Exp/STEAD"
-file_name = 'merged.hdf5'
-csv_file = 'merged.csv'
-
-# reading the csv file into a dataframe:
-df = pd.read_csv(os.path.join(DIR, csv_file))
-print('total events in csv file: ' + str(len(df)))
-# filterering the dataframe
-df = df[(df.trace_category == 'earthquake_local') & (df.source_distance_km <= 200)]
-print('total events selected: ' + str(len(df)))
-
+file_names = glob.glob('*.hdf5')
+csv_files = glob.glob('*.csv')
 eqs = []
-# retrieving selected waveforms from the hdf5 file:
-dtfl = h5py.File(os.path.join(DIR, file_name), 'r')
-bar = ProgressBar(max_value=len(df))
-for index, row in bar(df.iterrows()):
-    dataset = dtfl.get('data/' + str(row['trace_name']))
-    st = make_stream(dataset)
-    # waveforms, 3 channels: first row: E channle, second row: N channel, third row: Z channel
-    st.filter('bandpass', freqmin=1, freqmax=20)
-    st.trim(UTCDateTime(row['trace_start_time']) + row['p_travel_sec'] - 10,
-            UTCDateTime(row['trace_start_time']) + row['p_travel_sec'] + 80, pad=True, fill_value=0)
-    output = []
-    if len(st) == 3:
-        for tr in st:
-            output.append(tr.data)
-        output = np.array(output)
-        eqs.append(output)
-    else:
-        print("Something went wrong: not 3 channels...")
+for file_name, csv_file in zip(file_names,csv_files):
+    file_name = 'merged.hdf5'
+    csv_file = 'merged.csv'
+
+    # reading the csv file into a dataframe:
+    df = pd.read_csv(os.path.join(DIR, csv_file))
+    print('total events in csv file: ' + str(len(df)))
+    # filterering the dataframe
+    df = df[(df.trace_category == 'earthquake_local') & (df.source_distance_km <= 200)]
+    print('total events selected: ' + str(len(df)))
+
+    
+    # retrieving selected waveforms from the hdf5 file:
+    dtfl = h5py.File(os.path.join(DIR, file_name), 'r')
+    bar = ProgressBar(max_value=len(df))
+    for index, row in bar(df.iterrows()):
+        dataset = dtfl.get('data/' + str(row['trace_name']))
+        st = make_stream(dataset)
+        # waveforms, 3 channels: first row: E channle, second row: N channel, third row: Z channel
+        st.filter('bandpass', freqmin=1, freqmax=20)
+        st.trim(UTCDateTime(row['trace_start_time']) + row['p_travel_sec'] - 10,
+                UTCDateTime(row['trace_start_time']) + row['p_travel_sec'] + 80, pad=True, fill_value=0)
+        output = []
+        if len(st) == 3:
+            for tr in st:
+                output.append(tr.data)
+            output = np.array(output)
+            eqs.append(output)
+        else:
+            print("Something went wrong: not 3 channels...")
 
 with open(os.path.join(DIR, 'earthquakes.pkl'), 'wb') as f:
     pickle.dump(eqs, f, pickle.HIGHEST_PROTOCOL)
