@@ -13,6 +13,7 @@ explosions = []
 bar = ProgressBar(max_value=len(exps))
 for exp in bar(exps):
     st = read(exp, format='MSEED')
+    st.resample(100)
     st.filter('bandpass', freqmin=1, freqmax=20)
     unique_stas = []
     for tr in st:
