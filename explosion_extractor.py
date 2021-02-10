@@ -48,9 +48,13 @@ for exp in bar(exps):
         for tr in sta:
             starts.append(tr.stats.starttime)
             ends.append(tr.stats.endtime)
+            if tr.stats.channel[:-1] not in unique_chans:
+				unique_chans.append(tr.stats.channel[:-1])
         start = max(starts)
         end = max(starts) + 90
         sta.trim(start, end, pad=True, fill_value=0)
+        
+        
 
         # Divide multi instrument stations into single instrument
         for chan in unique_chans:
