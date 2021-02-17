@@ -9,6 +9,7 @@ from progressbar import ProgressBar
 DIR = "/mnt/big-data/earthquake/EQ_Exp/KOERI_Bulletin/"
 exps = glob.glob(os.path.join(DIR, 'KOERI_Explosion/*'))
 explosions = []
+slice = 0
 
 bar = ProgressBar(max_value=len(exps))
 for exp in bar(exps):
@@ -49,7 +50,7 @@ for exp in bar(exps):
             starts.append(tr.stats.starttime)
             ends.append(tr.stats.endtime)
             if tr.stats.channel[:-1] not in unique_chans:
-				unique_chans.append(tr.stats.channel[:-1])
+                unique_chans.append(tr.stats.channel[:-1])
         start = max(starts)
         end = max(starts) + 90
         sta.trim(start, end, pad=True, fill_value=0)
@@ -69,7 +70,13 @@ for exp in bar(exps):
                 for tr in sta:
                     print(tr.id)
                 print(f"Something went wrong: not 3 channels... {len(sta):d}")
+
+        if len(explosions) > 4500:
+            with open(os.path.join(DIR, f'explosions{slice:d}.pkl'), 'wb') as f:
+                pickle.dump(explosions, f, pickle.HIGHEST_PROTOCOL)
+            slice += 1
+            explosions = []
                 
-explosions = np.array(explosions)
-with open(os.path.join(DIR, 'explosions.pkl'), 'wb') as f:
-    pickle.dump(explosions, f, pickle.HIGHEST_PROTOCOL)
+if len(explosions) > 0:
+    with open(os.path.join(DIR, f'explosions{slice:d}.pkl'), 'wb') as f:
+        pickle.dump(explosions, f, pickle.HIGHEST_PROTOCOL)

@@ -5,11 +5,11 @@ from keras import Input, Model
 from keras.layers import Conv1D, Flatten, Dense, Reshape, MaxPooling1D, Dropout, concatenate, Activation
 
 
-def build_nn():
-    inputs = Input(shape=(2500, 3))
+def build_nn(input_shape):
+    inputs = Input(shape=input_shape)
     #inputs = Reshape((2500, 3,), input_shape=(3, 2500,))(inputs)
 
-    conv1 = Conv1D(61, kernel_size=12, activation='relu', kernel_initializer='glorot_normal')(inputs)
+    conv1 = Conv1D(64, kernel_size=12, activation='relu', kernel_initializer='glorot_normal')(inputs)
     pool1 = MaxPooling1D(pool_size=4)(conv1)
 
     conv2 = Conv1D(32, kernel_size=6, activation='relu', kernel_initializer='glorot_normal')(pool1)
