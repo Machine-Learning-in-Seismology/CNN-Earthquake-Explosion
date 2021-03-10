@@ -60,3 +60,4 @@ nn.fit(x=X, y=y,
        batch_size=100, epochs=500,
        validation_split=0.25, class_weight=class_weights,
        callbacks=[get_early_stop()])
+nn.save('model.h5')
