@@ -1,7 +1,7 @@
 import pickle
 import numpy as np
 import pandas as pd
-import os, glob, random, time
+import os, glob, random, time, sys
 import matplotlib.pyplot as plt
 from model_fft import build_nn, get_early_stop
 from sklearn.utils import shuffle
@@ -12,6 +12,28 @@ from keras.utils.vis_utils import plot_model
 from datetime import datetime
 from obspy import Trace
 DEBUG_THRESHOLD = False
+
+model_no = sys.argv[1]
+if model_no == '0':
+	from model_fft import build_nn, get_early_stop
+elif model_no == '1':
+	from model_fft1 import build_nn, get_early_stop
+elif model_no == '2':
+	from model_fft2 import build_nn, get_early_stop
+elif model_no == '3':
+	from model_fft3 import build_nn, get_early_stop
+elif model_no == '4':
+	from model_fft4 import build_nn, get_early_stop
+elif model_no == '5':
+	from model_fft5 import build_nn, get_early_stop
+elif model_no == '6':
+	from model_fft6 import build_nn, get_early_stop
+elif model_no == '7':
+	from model_fft7 import build_nn, get_early_stop
+elif model_no == '8':
+	from model_fft8 import build_nn, get_early_stop
+elif model_no == '9':
+	from model_fft9 import build_nn, get_early_stop
 
 def normal_wf(wf):
 	tr = Trace(wf)
@@ -160,7 +182,7 @@ timestr = time.strftime("%Y%m%d-%H%M%S")
 
 
 # Kfold
-kf = KFold(n_splits=2)
+kf = KFold(n_splits=4)
 
 fold = 0
 for train_index, test_index in kf.split(X_wf):
