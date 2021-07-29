@@ -83,7 +83,7 @@ timestr = time.strftime("%Y%m%d-%H%M%S")
 
 
 # Kfold
-kf = KFold(n_splits=2)
+kf = KFold(n_splits=4)
 
 fold = 0
 for train_index, test_index in kf.split(X_spec):
