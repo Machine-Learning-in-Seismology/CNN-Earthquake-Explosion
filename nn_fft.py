@@ -11,6 +11,7 @@ from keras.callbacks import ModelCheckpoint
 from keras.utils.vis_utils import plot_model
 from datetime import datetime
 from obspy import Trace
+import tensorflow as tf
 DEBUG_THRESHOLD = False
 
 model_no = sys.argv[1]
@@ -201,15 +202,17 @@ for train_index, test_index in kf.split(X_wf):
 			# l_dates = str(len(glob.glob('*' + date + '*')))
 			# f_name = 'Models/model_' + date + '_' + l_dates  + '.h5'
 			f_name = 'Models/model_' + timestr  + '.h5'
+			log_name = "logs/log" + model_no + "_" + timestr + ".csv"
+                        history_logger=tf.keras.callbacks.CSVLogger(log_name, separator=",", append=True)
 
 			# Fit the model
 			mc = ModelCheckpoint(filepath=f_name, monitor='val_loss', save_best_only=True)
 			#class_weights = class_weight.compute_class_weight('balanced', np.unique(y_wf), y_wf)
 			#class_weights = {i: class_weights[i] for i in range(len(class_weights))}
-			nn.fit(x=[X_wf_train,X_spec_train], y=[y_wf_train,y_spec_train],
+			test_score = nn.fit(x=[X_wf_train,X_spec_train], y=[y_wf_train,y_spec_train],
 				   batch_size=100, epochs=epoch,
 				   validation_split=0.25,
-				   callbacks=[get_early_stop(),mc])
+				   callbacks=[get_early_stop(),mc,history_logger])
 			score = nn.evaluate([X_wf_test, X_spec_test], [y_wf_test, y_spec_test])
 			print("FNR: %.2f FPR: %.2f ACC: %.2f" % (
 									score[3] / float(score[3] + score[4]),
