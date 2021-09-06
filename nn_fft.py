@@ -167,7 +167,8 @@ nn = build_nn(X_wf.shape[1:],X_spec.shape[1:])
 #y, X = shuffle(y, X)
 
 # Shuffle
-shuffled_indices = np.random.permutation(len(y_spec))
+shuffled_indices = np.random.RandomState(seed=42).permutation(len(y_spec))
+#shuffled_indices = np.random.permutation(len(y_spec))
 X_wf = X_wf[shuffled_indices]
 X_spec = X_spec[shuffled_indices]
 y_wf = y_wf[shuffled_indices]
