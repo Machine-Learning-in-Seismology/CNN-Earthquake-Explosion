@@ -26,7 +26,7 @@ def plot_signal(s, n):
 EPOCHS = [20]
 
 print("Loading data...")
-MASTER_DIR = "/media/dertuncay/Elements2/Miao/FVG/"   # "/home/dertuncay/Miao-Eq-Exp-Test/DB/"
+MASTER_DIR = "../DBs/"   # "/home/dertuncay/Miao-Eq-Exp-Test/DB/"
 
 # FFT
 EXP_DIR = MASTER_DIR + "Linville/EXP/"
@@ -42,7 +42,7 @@ ex_spec = []
 #        ex_spec = ex_spec + ex_
 
 #for i in range(len(os.listdir(EXP_DIR))):
-for i in range(1):
+for i in range(3):
 #    with open(os.path.join(ERT_DIR, f"earthquakes_{i:d}.pkl"), "rb") as f:
 #        eq_ = pickle.load(f, encoding='latin1')
 #        eq_wf = eq_wf + eq_
@@ -58,17 +58,21 @@ for i in range(len(os.listdir(ERT_DIR))):
 
 eq_spec_labels = np.ones(len(eq_spec))
 ex_spec_labels = np.zeros(len(ex_spec))
-
+#print(len(eq_spec_labels))
+#print(len(ex_spec_labels))
 X_spec = np.concatenate((ex_spec, eq_spec))
-# print(X_spec.shape)
+X_spec = X_spec[:,0,:,:]
+print(X_spec.shape)
 y_spec = np.concatenate((ex_spec_labels, eq_spec_labels))
-# X_spec = np.reshape(X_spec, (X_spec.shape[0],40,48,3))
+
+#X_spec = np.reshape(X_spec, (X_spec.shape[0],40,144))
 
 # Build the model
 nn = build_nn(X_spec.shape[1:])
 #y, X = shuffle(y, X)
 
 # Shuffle
+np.random.seed(42)
 shuffled_indices = np.random.permutation(len(y_spec))
 X_spec = X_spec[shuffled_indices]
 y_spec = y_spec[shuffled_indices]
@@ -98,7 +102,7 @@ for train_index, test_index in kf.split(X_spec):
 			# date = str(datetime.date(datetime.now()))
 			# l_dates = str(len(glob.glob('*' + date + '*')))
 			# f_name = 'Models/model_' + date + '_' + l_dates  + '.h5'
-			f_name = 'Models/model_' + timestr  + '.h5'
+			f_name = 'Models/linville_model_' + timestr  + '.h5'
 
 			# Fit the model
 			mc = ModelCheckpoint(filepath=f_name, monitor='val_loss', save_best_only=True)
