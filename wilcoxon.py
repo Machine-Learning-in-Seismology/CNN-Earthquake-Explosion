@@ -21,7 +21,7 @@ print('Our Model FNR P: {}\nLinville Model FPR P: {}\nOur Model FNR P: {}\nLinvi
 
 '''
 Our Model FNR P: 0.0001308020996998329
-Linville Model FPR P: 8.857457687863547e-05
+Linville Model FNR P: 8.857457687863547e-05
 Our Model FNR P: 8.782404130245517e-05
 Linville Model FPR P: 8.857457687863547e-05
 '''
