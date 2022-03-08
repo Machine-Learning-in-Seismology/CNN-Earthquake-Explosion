@@ -18,29 +18,22 @@ def build_nn(input_shape1,input_shape2):
 	pool14 = MaxPooling1D(pool_size=2)(A4)
 
 	flattened_wf = Flatten()(pool14)  
-	# flattened_wf = Reshape((1, -1))(flattened_wf)
 
 	input2 = Input(shape=input_shape2,name='input2')
 	B1 = Conv1D(16, kernel_size=12, activation='relu', kernel_initializer='glorot_normal')(input2)
 	pool21 = MaxPooling1D(pool_size=4)(B1)
 	B2 = Conv1D(8, kernel_size=6, activation='relu', kernel_initializer='glorot_normal')(pool21)
 	pool22 = MaxPooling1D(pool_size=2)(B2)
-	# B3 = Conv1D(8, kernel_size=6, activation='relu', kernel_initializer='glorot_normal')(pool22)
-	# pool23 = MaxPooling1D(pool_size=2)(B3)
-	# B4 = Conv1D(4, kernel_size=3, activation='relu', kernel_initializer='glorot_normal')(pool23)
-	# pool24 = MaxPooling1D(pool_size=2)(B4)
 
 	flattened_fft = Flatten()(pool22)  
-	# flattened_spec = Reshape((1, -1))(flattened_spec)
 
 	concatted = concatenate([flattened_wf, flattened_fft], axis = 1)
 
 	den1 = Dense(40, activation='relu', kernel_initializer='glorot_normal')(concatted)
-#        den2 = Dense(30, activation='relu', kernel_initializer='glorot_normal')(den1)
-	den3 = Dense(20, activation='relu', kernel_initializer='glorot_normal')(den1)
-	den4 = Dense(10, activation='relu', kernel_initializer='glorot_normal')(den3)
-	den5 = Dense(1)(den4)
-	pred = Activation('sigmoid', name='linear')(den5)
+	den2 = Dense(20, activation='relu', kernel_initializer='glorot_normal')(den1)
+	den3 = Dense(10, activation='relu', kernel_initializer='glorot_normal')(den2)
+	den4 = Dense(1)(den3)
+	pred = Activation('sigmoid', name='linear')(den4)
 
 	model = Model(inputs=[input1,input2],outputs=[pred])
 
@@ -50,7 +43,6 @@ def build_nn(input_shape1,input_shape2):
 			keras.metrics.binary_accuracy
 		])
 	return model
-# plot_model(model,to_file='demo.png',show_shapes=True)
 
 def get_early_stop():
 	return EarlyStopping(monitor='val_loss', patience=2, verbose=0, mode='auto', restore_best_weights=True)	
