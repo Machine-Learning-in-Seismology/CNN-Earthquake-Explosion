@@ -8,16 +8,12 @@ from keras.layers import LSTM,Conv1D, Conv2D, Flatten, Dense, Reshape, MaxPoolin
 
 def build_nn(input_shape1):
 	input1 = Input(shape=input_shape1,name='input1')
-	A1 = LSTM(40,return_sequences=True)(input1) #Conv2D(18, kernel_size=2, activation='relu', kernel_initializer='glorot_normal')(input1)
-	#pool11 = MaxPooling2D(pool_size=2)(A1)
-	A2 = LSTM(40,return_sequences=True)(A1) #Conv2D(36, kernel_size=2, activation='relu', kernel_initializer='glorot_normal')(pool11)
-	#pool12 = MaxPooling2D(pool_size=2)(A2)
-	A3 = LSTM(80,return_sequences=True)(A2) #Conv2D(54, kernel_size=2, activation='relu', kernel_initializer='glorot_normal')(pool12)
-	#pool13 = MaxPooling2D(pool_size=2)(A3)
-	A4 = LSTM(80,return_sequences=True)(A3) #Conv2D(54, kernel_size=2, activation='relu', kernel_initializer='glorot_normal')(pool13)
-	#pool14 = MaxPooling2D(pool_size=2)(A4)
+	A1 = LSTM(40,return_sequences=True)(input1)
+	A2 = LSTM(40,return_sequences=True)(A1)
+	A3 = LSTM(80,return_sequences=True)(A2)
+	A4 = LSTM(80,return_sequences=True)(A3)
 
-	flattened_spec = Flatten()(A4) #(pool14) 
+	flattened_spec = Flatten()(A4)
 
 	den = Dense(1)(flattened_spec)
 	pred = Activation('sigmoid', name='linear')(den)
