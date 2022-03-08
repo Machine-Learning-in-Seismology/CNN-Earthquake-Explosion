@@ -15,9 +15,6 @@ def build_nn(input_shape1):
 	A4 = Dropout(rate=0.3)(A3)
 	A5 = Dense(units=2,kernel_regularizer=regularizers.l1_l2(l1=0.0, l2=5e-4),activation='relu')(A4)
 
-	# flattened_spec = Flatten()(A5) 
-
-	# den = Dense(1)(A5)
 	pred = Activation('softmax', name='linear')(A5)
 
 	model = Model(inputs=[input1],outputs=[pred])
